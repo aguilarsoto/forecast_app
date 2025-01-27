@@ -7,7 +7,7 @@ class WeathergovService
 
     response = []
 
-    if body['properties']['periods']
+    if body['properties'] && body['properties']['periods']
       body['properties']['periods'].each do |period|
        response.push({
          name: period['name'],
