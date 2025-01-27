@@ -4,8 +4,21 @@ class Location < ApplicationRecord
   geocoded_by :address do |obj,results|
     if geo = results.first
       obj.zipcode = geo.postal_code
+      obj.latitude = geo.latitude
+      obj.longitude = geo.longitude
     end
   end
 
   after_validation :geocode
+
+  def forecast
+    return [] if latitude.nil? || longitude.nil?
+    return Rails.cache.fetch(zipcode, expires_in: 30.minutes) do
+      WeathergovService.call(latitude.abs.to_i, longitude.abs.to_i)
+    end
+  end
+
+  def cached_forecast?
+    Rails.cache.exist?(zipcode)
+  end
 end

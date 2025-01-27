@@ -3,6 +3,22 @@
 <%= render @location %>
 
 <div>
+
+  <% if @location.cached_forecast? %>
+    <div style="color: red">
+      <h2>This information has been cached</h2>
+    </div>
+  <% end %>
+
+  <ul>
+    <% @location.forecast.each do |period|  %>
+      <li><%= "#{period[:name]}: #{period[:temperature]} #{period[:unit]} "  %></li>
+    <% end %>
+  </ul>
+
+</div>
+
+<div>
   <%= link_to "Edit this location", edit_location_path(@location) %> |
   <%= link_to "Back to locations", locations_path %>
 
